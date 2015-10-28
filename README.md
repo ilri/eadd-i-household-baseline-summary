@@ -1,4 +1,4 @@
-# EADD phase I baseline synthesis report: Nandi, Kenya
+## EADD phase I baseline synthesis report: Nandi, Kenya
 
 This reposity provides a set of scripts to reproduce a report on household and farm dynamics of farming households in Nandi, Kenya.
 
@@ -8,4 +8,5 @@ There are several guides for setting up R for creating reproducible documents us
 
  
 
-
+### License
+Licensed under [GNU General Public License v3.0](http://choosealicense.com/licenses/gpl-3.0/#).
