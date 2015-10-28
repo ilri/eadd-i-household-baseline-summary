@@ -1,0 +1,988 @@
+---
+title: "Summary of EADD I data"
+author: "Simon Fraval"
+output: word_document
+---
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+#library(sjPlot)
+library(pander)
+library(descr)
+library(ggplot2)
+library(tables)
+library(dplyr)
+library(tidyr)
+library(corrplot)
+library(psych)
+library(english)
+library(gdata)
+#library(doBy)
+EADD2009 <- read.csv("EADD2009summarySet.csv")
+EADD2009dairyLeaning <- read.csv("EADD2009dairyLearning.csv")
+tblNo <- 0
+fgrNo <- 0
+
+```
+
+
+#Executive summary
+##Household and farm characteristics
+There was a wide variety of household and farm arrangements sampled in Nandi county; on average respondents had medium land sizes and moderate productivity traits (table E1). Households with an older head and higher incomes (>20,000KES) tended to have larger farms and more ruminant animals. More educated heads tended to have a greater portion of exotic breeds of cattle in their herd. 
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+houseFarmSummaryMean <- c(round(mean(EADD2009$HeadAge, na.rm=T),0), round(mean(EADD2009$Headschyears, na.rm=T),0), round(mean(EADD2009$HHpop, na.rm=T),0), round(mean(EADD2009$totalAcres, na.rm=T),0), round(mean(EADD2009$B3LandRentIn, na.rm=T),2), round(mean(EADD2009$TLUruminant, na.rm=T),0), round(mean(EADD2009$ageCattleMean[EADD2009$ageCattleMean>0], na.rm=T),0), round(mean(EADD2009$AFCexotic[EADD2009$AFCexotic>5], na.rm=T),0), round(mean(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>5], na.rm=T),0), round(mean(EADD2009$milkCalvingExotic[EADD2009$milkCalvingExotic>0], na.rm=T),1), round(mean(EADD2009$milkYestPercSold, na.rm=T)*100,0), round(mean(EADD2009$concentratesKG[EADD2009$concentratesKG>0], na.rm=T),2))
+houseFarmSummarysd <- c(round(sd(EADD2009$HeadAge, na.rm=T),0), round(sd(EADD2009$Headschyears, na.rm=T),0), round(sd(EADD2009$HHpop, na.rm=T),0), round(sd(EADD2009$totalAcres, na.rm=T),0), round(sd(EADD2009$B3LandRentIn, na.rm=T),2), round(sd(EADD2009$TLUruminant, na.rm=T),0), round(sd(EADD2009$ageCattleMean[EADD2009$ageCattleMean>0], na.rm=T),0), round(sd(EADD2009$AFCexotic[EADD2009$AFCexotic>5], na.rm=T),0), round(sd(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>5], na.rm=T),0), round(sd(EADD2009$milkCalvingExotic[EADD2009$milkCalvingExotic>0], na.rm=T),1), round(sd(EADD2009$milkYestPercSold, na.rm=T)*100,0), round(sd(EADD2009$concentratesKG[EADD2009$concentratesKG>0], na.rm=T),2))
+HHfarmSummary <- cbind(houseFarmSummaryMean, houseFarmSummarysd)
+colnames(HHfarmSummary) <- c("Average", "Standard deviation")
+rownames(HHfarmSummary) <- c("Age of household head", "Years of schooling of household head", "Household population", "Land area (acres)", "Land rented (acres)", "Ruminant livestock (TLUs)", "Cow age (years)", "Age at first calving (months)", "Calving interval (months)", "Milk yield at calving (litres)", "Percentage of milk sold", "Concentrates fed (kg/cow/day)"
+)
+
+```
+
+Table E1. Key household and farm variables
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(HHfarmSummary, emphasize.rownames=F))
+```
+
+The majority of farmers cultivated fodder, with a few of these farmers assessing quality before feeding. Several feeding and veterinary practices tended to be implemented together, particularly as households intensify and keep more exotic cattle. Further, as milk yield increased, so too did the tendency to keep milk records.
+
+There was a wide range of information resources drawn on to improve dairy production, with the most frequent sources being field days, replicating other farmers and the media.
+
+Dairy production in the county was calculated to be profitable and low cost.
+
+##Constraints
+Farmers identified lack of credit to be a major constraint to improving their dairy enterprise. Despite being raised as a major constraint, very few households accessed loans. A fear of not being able to pay loans back was the predominant reason for not utilizing (regardless of gender), women also identified the lack of collateral and the cost of the loans as reasons.
+
+Other constraints to improving productivity identified were: lack of feed resources, genetic limitation, a poor market, cow and calf mortality, lack of technical information on feed production and conservation, and poor conception and financing difficulties of AI services. 
+
+Three household and farm characteristics were correlated with constraints for improving productivity: head schooling years, total hours spent on farm and portion of exotic and local cattle. An increase in schooling years related to genetic limitations and availability of technical information for feed as being less of an actual or perceived constraint. An increase in hours spent working on the farm was related to a decreased instance of milk marketing and feed being constraints. Further, households spending more time on farm work and those with fewer exotic cattle saw less benefit in cultivating legumes for fodder; this is logical given the marginal cost and benefit is not favorable in these conditions.
+
+##Intra household dynamics
+Livestock feeding was predominantly undertaken by the men of the households and milking and milk marketing largely carried out by women. There were instances in each of these categories where either men or women did all of the work.
+
+Men tended to own more small and large ruminants, and businesses than women. Women tended to own more poultry than men.
+
+The household head is generally the one to decide whether to access animal health services, learning opportunities, credit facilities and whether to purchase or sell cattle. Men applied for and received loans significantly more than women.
+
+It was more common for women to receive income from evening milk than the morning in Kenya. While not exclusively, women received a greater portion of the income from morning milk when sold to individual customers and private traders as opposed to more formal channels. 
+
+##Household head gender
+In Nandi, the female heads sampled had average land sizes and ruminant Tropical Livestock Units (TLUs). Several female headed households had above average milk yield at calving, and less variability around the optimal age at first calving and calving interval  - positive indications for the productivity of female headed households.
+
+Female headed households, however, tended to be less educated and less likely to own vehicles, phones and exotic cattle in Kenya. 
+
+
+#Summary of households in Nandi north and central sub-counties
+This section provides descriptive statistics and an initial exploratory analysis of 144 households surveyed in Nandi for the EADD baseline, 2009. The purpose of this analysis is to guide investigations into the social distribution of participation in dairy value chains.
+
+These data offer several insights into the nature of dairy value-chain participants: their household characteristics, farm characteristics, herd management, milk production, fodder production, labor allocation, animal health, learning methods and decision making. 
+
+##Household characteristics
+
+The majority (`r round(length(EADD2009$HHheadGender[EADD2009$HHheadGender==1])/length(EADD2009$HHheadGender)*100, 0)`) of households interviewed in Nandi county were male headed. The average age of the household head was `r round(mean(EADD2009$HeadAge),0)`.
+
+Years of farming experience follows age very closely. This may reflect the vague nature of the question, where people may consider their farming experience to start at childhood (figure 2). 
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=factor(""), y=HeadAge, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4)  + xlab("") + ylab("Household head age") +theme(legend.position = "none") + scale_fill_manual(values=c("indianred"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Age of household head 
+
+`*` Diamond is the mean, line is the median
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=factor(""), y=HYrsExp, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("") + ylab("Household head years farming experience") +theme(legend.position = "none") + scale_fill_manual(values=c("indianred"))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Years of household head farming experience 
+
+It was noted in the EADD baseline report series that "In Kenya, farmers in Kabiyet hub [Nandi] had the highest average number of years of schooling" (p. 21 EADD, 2011).
+Household heads had an average of `r round(mean(EADD2009$Headschyears),0)` years of schooling.
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=factor(""), y=Headschyears, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("") + ylab("Household head schooling years") +theme(legend.position = "none") + scale_fill_manual(values=c("indianred"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Years of schooling of household head
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+#HHheadGender_literate <- tabular((Heading("Literacy", TRUE) * (Heading("Illiterate") * labelSubset(subset = as.integer(as.factor(Headreadwrite)) ==  1L, label = "Headreadwrite") + Heading("Literate") * labelSubset(subset = as.integer(as.factor(Headreadwrite)) ==   2L, label = "Headreadwrite")) + 1)~ (Heading("Gender", TRUE) * (Heading("Male") * labelSubset(subset = as.integer(as.factor(HHheadGender)) ==  1L, label = "HHheadGender") + Heading("Female") * labelSubset(subset = as.integer(as.factor(HHheadGender)) ==  2L, label = "HHheadGender"))), data=EADD2009)
+
+HHheadGender_literate <- table(EADD2009$Headreadwrite)
+
+rownames(HHheadGender_literate) <- c("Illiterate", "Literate")
+
+```
+
+
+Table `r tblNo <- tblNo+1;tblNo`. Literacy of household head
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(HHheadGender_literate, emphasize.rownames=F))
+```
+
+The average household population was `r round(mean(EADD2009$HHpop),0)` people, with a maximum of `r round(max(EADD2009$HHpop),0)`. Household occupants were defined as those 'living permanently on the compound'. 
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=factor(""), y=HHpop, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Household members") +theme(legend.position = "none") + scale_fill_manual(values=c("indianred"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Household population
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+incomeCat <- as.vector(table(EADD2009$incomeCat))
+
+incomeCats <- c("<2,500", "2,500-5,000", "5,000-10,000", "10,000-20,000", "20,000-30,000", ">30,000")
+incomeCat <- cbind(incomeCats, incomeCat)
+colnames(incomeCat) <- c("Income range", "Frequency")
+```
+
+Over 60% of respondents earned over 5,000 KES per month, and 28% of households listed dairy as their primary source of income.
+
+Table `r tblNo <- tblNo+1;tblNo`. Income ranges
+```{r, warning=FALSE, echo=F}
+pander(incomeCat)
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+dairyIncome1 <- table(EADD2009$dairyIncome1)
+rownames(dairyIncome1) <- c("Other #1", "Dairy #1")
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Primary source of income: dairy vs others
+```{r, warning=FALSE, echo=F}
+pander(dairyIncome1)
+```
+
+In terms of who in the household controls the income "in most cases, it is the household male who gets the income from the sale of milk. One exception is that the income from the evening milking in Kenya goes to the household female member. This is linked to the type of outlets (traders/ coop/ neighbors) where milk is sold." (p. 23 EADD, 2010a)
+
+##Farm and herd summary
+On average, farmers interviewed in Nandi had `r round(mean(EADD2009$totalAcres, na.rm=T),2)` acres in 2009. Land holdings varied widely, with one farmer having as much as 200 acres. The proportion of this that was rented was low, at `r round(mean(EADD2009$percRented, na.rm=T),2)*100`% of total holdings, with one farmer renting as much as `r round(max(EADD2009$percRented, na.rm=T)*100,0)`% of their total land holding.  
+
+
+```{r, echo=F}
+totalAcres <- c(mean(EADD2009$totalAcres, na.rm=T), max(EADD2009$totalAcres, na.rm=T), sd(EADD2009$totalAcres, na.rm=T), length(EADD2009$totalAcres[EADD2009$totalAcres>0]))
+percRented <- c(mean(EADD2009$percRented, na.rm=T), max(EADD2009$percRented, na.rm=T), sd(EADD2009$percRented, na.rm=T), length(EADD2009$percRented[EADD2009$percRented>0]))
+RentedPercent <- c("Mean", "Maximum", "SD", "N")
+percRentedTable <- cbind(RentedPercent, round(totalAcres, 2), round(percRented,2))
+colnames(percRentedTable) <- c("", "Total land (acres)", "Percent of land rented")
+
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Land holdings
+```{r, warning=FALSE, echo=F}
+
+pander(percRentedTable)
+```
+
+Ruminant livestock are an important component of Kalenjin culture; THE EADD baseline report series noted that "In Kenya, farmers in Kabiyet hub [Nandi] had the ... highest number of cattle kept" (p. 21 EADD, 2011) On average, households keep 10 tropical livestock units (TLUs), with the inner quartile range from 4 to 11 TLUs. Several households keep between 12 and 22 TLUs, with one household as many as 110 TLUs. 
+
+Households tend to keep more exotic breeds, with `r round(mean(EADD2009$percLocalCattle)*100, 0)`% of the herd on average being local zebu cattle. There are 4 farms with more than 50% of their herd being local zebu.
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(y=TLUruminant, x=factor(""), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Ruminants (TLUs)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Ruminant livestock numbers (TLUs)
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(y=percLocalCattle, x=factor(""), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Local cattle (%)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. herd composition: local cattle
+
+```{r, echo=F}
+ageCattleMean <- c(mean(EADD2009$ageCattleMean, na.rm=T), max(EADD2009$ageCattleMean, na.rm=T), sd(EADD2009$ageCattleMean, na.rm=T), length(EADD2009$ageCattleMean[EADD2009$ageCattleMean>0]))
+AFCexotic <- c(mean(EADD2009$AFCexotic[EADD2009$AFCexotic>10], na.rm=T), max(EADD2009$AFCexotic, na.rm=T), sd(EADD2009$AFCexotic[EADD2009$AFCexotic>10], na.rm=T), length(EADD2009$AFCexotic[EADD2009$AFCexotic>10]))
+calvingIntExotic <- c(mean(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>5], na.rm=T), max(EADD2009$calvingIntExotic, na.rm=T), sd(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>5], na.rm=T), length(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>5]))
+CattleSummary <- c("Mean", "Maximum", "SD", "N")
+CattleSummaryTable <- cbind(CattleSummary, round(ageCattleMean, 2), round(AFCexotic,2), round(calvingIntExotic,2))
+colnames(CattleSummaryTable) <- c("", "Cow age", "AFC", "Calving interval")
+
+```
+
+
+Average cross breed and exotic cow age was `r round(mean(EADD2009$ageCattleMean, na.rm=T) ,0)` years which is quite similar to herds in developed countries. The maximum age identified from these households in Nandi was 12 years, which is high for productive and reproductive purposes, but still within reason. While households in Nandi county tend to keep cattle beyond their productive prime (pers. comm.), these data and baseline reports noted that "The culling of poor animals was practiced by quite a number of households" (P 22 EADD, 2009). Age at first calving (AFC) was slightly higher than the recommended 24 months, but may be optimal if additional time for weight gain is required. The variability around the mean is higher than what would be seen in developed countries, with `r english(length(EADD2009$AFCexotic[EADD2009$AFCexotic<24 & EADD2009$AFCexotic>10]))` households with an average calving below 24 months and a larger cohort of `r length(EADD2009$AFCexotic[EADD2009$AFCexotic>30])` households above 30 months. The calving interval for exotic cows was `r round(mean(EADD2009$calvingIntExotic, na.rm=T),0)` months on average, this is a reasonable calving interval. Several households, do however, have fertility or herd management issues in this respect, with `r length(EADD2009$calvingIntExotic[EADD2009$calvingIntExotic>20])` households having a 20+ month calving interval.  The average age and calving interval could be skewed towards the more productive end of the scale by the way the question was asked; farmers were asked to provide details of three productive animals in the herd, which could exclude older, non-productive animals with longer calving intervals.
+
+Table `r tblNo <- tblNo+1;tblNo`. Cow age and reproductive traits of exotic cattle
+```{r, warning=FALSE, echo=F}
+
+pander(CattleSummaryTable)
+```
+
+
+```{r, echo=F}
+#AFClocal <- c(mean(EADD2009$AFClocal, na.rm=T), max(EADD2009$AFClocal, na.rm=T), sd(EADD2009$AFClocal, na.rm=T), sum(EADD2009$AFClocal==0| is.na(EADD2009$calvingIntLocal)==T, na.rm=T))
+#calvingIntLocal <- c(mean(EADD2009$calvingIntLocal, na.rm=T), max(EADD2009$calvingIntLocal, na.rm=T), sd(EADD2009$calvingIntLocal, na.rm=T), sum(EADD2009$calvingIntLocal==0| is.na(EADD2009$calvingIntLocal)==T, na.rm=T))
+#CattleSummary <- c("Mean", "Maximum", "SD", "Missing data")
+#CattleSummaryTable2 <- cbind(CattleSummary, round(AFClocal,2), round(calvingIntLocal,2))
+#colnames(CattleSummaryTable2) <- c("", "AFC", "Calving interval" )
+
+```
+
+```{r, warning=FALSE, echo=F}
+
+#pander(CattleSummaryTable2)
+```
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+records <- c(length(EADD2009$RespID[EADD2009$C8KeepRecords==1 & is.na(EADD2009$C8KeepRecords)==F]),sum(EADD2009$C8_1, na.rm=T), sum(EADD2009$C8_2, na.rm=T), sum(EADD2009$C8_3, na.rm=T), sum(EADD2009$C8_4, na.rm=T), sum(EADD2009$C8_5, na.rm=T), sum(EADD2009$C8_6, na.rm=T), sum(EADD2009$C8_7, na.rm=T), length(EADD2009$RespID)-sum(EADD2009$C8KeepRecords, na.rm=T))
+recordLabels <- c("Any records kept", "Breeding records", "Production records", "Veterinary records", "Sales and purchases",  "Deaths and births", "Extension visits", "Feeding records", "No records kept")
+recordsSummary <- cbind(recordLabels, records)
+colnames(recordsSummary) <- c("",  "Count of households")
+```
+
+Approximately `r round((length(EADD2009$RespID[EADD2009$C8KeepRecords==1 & is.na(EADD2009$C8KeepRecords)==F])/length(EADD2009$RespID)*100),0)`% of farmers kept at least one form of record. Most common were breeding records (which is valuable in preventing back-breeding) and production records. Sales and purchases, veterinary, deaths and births and extension records were also kept by a few farmers. No farmer kept feeding records.
+
+The most common form of cattle identification was 'by name' (table 7), for which it is assumed that the cow is identified by appearance.
+
+Table `r tblNo <- tblNo+1;tblNo`. Cattle related records kept (multiple responses per household)
+```{r, warning=FALSE, echo=F}
+pander(recordsSummary)
+```
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+cattleID <- c(sum(EADD2009$C9_1, na.rm=T), sum(EADD2009$C9_2, na.rm=T), sum(EADD2009$C9_3, na.rm=T), sum(EADD2009$C9_4, na.rm=T), sum(EADD2009$C9_5, na.rm=T))
+cattleIDLabels <- c("None", "Name", "Tag number", "Branding/notching", "Colour")
+cattleIDSummary <- cbind(cattleIDLabels, cattleID)
+colnames(cattleIDSummary) <- c("",  "Count of households")
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Methods of identifying cattle (multiple per household)
+```{r, warning=FALSE, echo=F}
+pander(cattleIDSummary)
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+cattlePurchDeci <- table(EADD2009$cattlePuchDeci)
+cattleSellDeci <- table(EADD2009$cattleSellDeci)
+cattleBuySell <- rbind(c(cattlePurchDeci[1], 0, cattlePurchDeci[2], cattlePurchDeci[3]),cattleSellDeci)
+cattleBuySell <- cbind(cattleBuySell[,"1"], cattleBuySell[,2], cattleBuySell[,"3"]+cattleBuySell[,"8"]) 
+colnames(cattleBuySell) <- c("Household head", "Spouse", "Jointly")
+rownames(cattleBuySell) <- c("Cattle purchase decision", "Cattle sale decision")
+```
+
+Most often the household head made the decision to purchase or sell cattle. Some households, however, do make joint decisions either as a couple or a family (table 8).
+
+Table `r tblNo <- tblNo+1;tblNo`. Decision makers of cattle purchases and sales
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(cattleBuySell, emphasize.rownames=F))
+```
+
+
+```{r, echo=F}
+matureCattleDeaths <- c(length(EADD2009$matureCattleDeaths[EADD2009$matureCattleDeaths>0]))
+immatureCattleDeaths <- c(length(EADD2009$immatureCattleDeaths[EADD2009$immatureCattleDeaths>0]))
+CattleSummary <- c("Households")
+cattleDeaths <- cbind(CattleSummary, round(matureCattleDeaths,0), round(immatureCattleDeaths,0))
+colnames(cattleDeaths) <- c("", "Mature cattle deaths", "Calf deaths")
+
+```
+
+Over the twelve months prior to interview, several households experienced cattle mortalities (table 9). There was a higher instance of calf deaths, with over one in ten households losing a calf.
+
+Table `r tblNo <- tblNo+1;tblNo`. Households with cattle deaths in 12 months
+```{r, warning=FALSE, echo=F}
+pander(cattleDeaths)
+```
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+waterLimit <- sum(EADD2009$E10WaterAnimal, na.rm=T)
+waterLabels <- c("Number of farmers with water limitations")
+waterlimSummary <- cbind(waterLabels, waterLimit)
+colnames(waterlimSummary) <- c("",  "Count of households")
+```
+
+Many farmers (`r round(sum(EADD2009$E10WaterAnimal, na.rm=T)/length(EADD2009$RespID)*100,0)`%) experienced water shortages (table 10). Such shortages, however, did not rate highly as limitations to increasing milk production (table 12) or to fodder cultivation (table 18).
+Expenditure on water was higher than the Kenyan average in both Kaptumo and Kabiyet (EADD, 2010b). 
+
+Table `r tblNo <- tblNo+1;tblNo`. Water limitations
+```{r, warning=FALSE, echo=F}
+pander(waterlimSummary)
+```
+
+
+
+##Milk summary
+Average daily milk yield at calving for exotic cows was `r round(mean(EADD2009$milkCalvingExotic[EADD2009$milkCalvingExotic>0], na.rm=T), 1)`. There was a high degree of variation around the mean, with 5 households having an average milk yield at calving of above 15 litres per day (figure 7). Milk yield at calving for local cattle was `r round(mean(EADD2009$milkCalvingLocal[EADD2009$milkCalvingLocal>0], na.rm=T),1)` on average (figure 8). Local cattle were less often reported in the milk receipts records, with 22 households only.
+
+Of the milk produced at the time of interview, on average households consumed `r round(mean(EADD2009$milkYestPercCons, na.rm=T)*100,0)`% and sold `r round(mean(EADD2009$milkYestPercSold, na.rm=T)*100,0)`% (table 11). The households that did sell milk, sold on average `r round(mean(EADD2009$milkYestPercSold[EADD2009$milkYestPercSold>0], na.rm=T)*100,0)`% and at least `r round(min(EADD2009$milkYestPercSold[EADD2009$milkYestPercSold>0], na.rm=T)*100,0)`% of the milk from the day before interview.
+
+Milk sales do vary over time (figure 9), which will in part correlated with production levels and other seasonal and shock events. It is common for more milk to be consumed when children return home from boarding school or return home for holidays. The end of 2007 and and start of 2008 was the period of post-election violence, which may have also impacted milk sales. 
+
+```{r, echo=F, fig.height=3, fig.width=3, warning=FALSE}
+ggplot(subset(EADD2009, milkCalvingExotic>0), aes(x=factor(""), y=milkCalvingExotic, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Milk yield (l)") +theme(legend.position = "none") + scale_fill_manual(values=c("white"))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Average milk yield for exotic/cross breed cows within household
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(subset(EADD2009, milkCalvingLocal>0), aes(x=factor(""), y=milkCalvingLocal, fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Milk yield (l)") +theme(legend.position = "none") + scale_fill_manual(values=c("white"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Average milk yield for local breed cows within household
+
+```{r, echo=F}
+milkYestPercCons  <- c(mean(EADD2009$milkYestPercCons , na.rm=T)*100,max(EADD2009$milkYestPercCons , na.rm=T)*100, sum(is.na(EADD2009$milkYestPercCons )==T, na.rm=T))
+milkYestPercSold <- c(mean(EADD2009$milkYestPercSold, na.rm=T)*100, max(EADD2009$milkYestPercSold*100, na.rm=T), sum(is.na(EADD2009$milkYestPercSold)==T, na.rm=T))
+
+milkLabels <- c("Mean percentage", "Max percentage", "No data (households)")
+milkSummary <- cbind(milkLabels, round(milkYestPercCons,2), round(milkYestPercSold,2))
+colnames(milkSummary) <- c("",  "Milk consumed", "Milk sold")
+
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Utilisation of milk
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(milkSummary, split.cells = c(1,2,2, 2,2)))
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+milkMonthlyAve <- group_by(EADD2009)
+milkMonthlyAve <- summarise(milkMonthlyAve, "2007-10-01"=mean(D5Oct07Qty, na.rm=T), "2007-11-01"=mean(D5Nov07Qty, na.rm=T), "2007-12-01"=mean(D5Dec07Qty, na.rm=T),"2008-01-01"=mean(D5Jan08Qty, na.rm=T), "2008-02-01"=mean(D5Feb08Qty, na.rm=T), "2008-03-01"=mean(D5Mar08Qty, na.rm=T), "2008-04-01"=mean(D5Apr08Qty, na.rm=T), "2008-05-01"=mean(D5May08Qty, na.rm=T), "2008-06-01"=mean(D5Jun08Qty, na.rm=T), "2008-07-01"=mean(D5July08Qty, na.rm=T), "2008-08-01"=mean(D5Aug08Qty, na.rm=T), "2008-09-01"=mean(D5Sept08Qty, na.rm=T), "2008-10-01"=mean(D5Oct08Qty, na.rm=T), "2008-11-01"=mean(D5Nov08Qty, na.rm=T), "2008-12-01"=mean(D5Dec08Qty, na.rm=T), "2009-01-01"=mean(D5Jan09Qty, na.rm=T), "2009-02-01"=mean(D5Feb09Qty, na.rm=T), "2009-03-01"=mean(D5Mar09Qty, na.rm=T), "2009-04-01"=mean(D5Apr09Qty, na.rm=T), "2009-05-01"=mean(D5May09Qty, na.rm=T), "2009-06-01"=mean(D5Jun09Qty, na.rm=T))
+milkMonthlyAve <- gather(milkMonthlyAve)
+```
+
+```{r, echo=F, fig.height=3, fig.width=7}
+ggplot(milkMonthlyAve, aes(x=as.Date(key), y=value)) + geom_line() +  xlab("Date")+ ylab("Milk sold (ave household)")
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Average monthly household sales of milk 
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+dairyConstraint <- c(sum(EADD2009$ProdConstrGeneticLimit, na.rm=T), sum(EADD2009$prodConstrCredit, na.rm=T),   sum(EADD2009$prodConstrMilkMarket, na.rm=T), sum(EADD2009$prodConstrLabor, na.rm=T), sum(EADD2009$prodConstrFeed, na.rm=T), sum(EADD2009$prodConstrFeedPurchCost, na.rm=T), sum(EADD2009$prodConstrCowHealth, na.rm=T), sum(EADD2009$prodConstrNoBuyer, na.rm=T), sum(EADD2009$prodConstrWater, na.rm=T), sum(EADD2009$prodConstrTheft, na.rm=T))
+dairyreasonLabels <- c("Genetics", "Availability of credit", "Poor market", "Lack of labor", "Not enough feed",  "Feed too expensive", "Animal health", "No buyer/cooperative", "Availability of water", "Theft risk")
+dairyConstraintSummary <- cbind(dairyreasonLabels, dairyConstraint)
+colnames(dairyConstraintSummary) <- c("",  "Count across households")
+dairyConstraintSummary <- dairyConstraintSummary[sort.list(as.numeric(dairyConstraintSummary[,2]), decreasing=T), ]
+
+```
+
+Households that had ambitions of increasing their milk yield were asked what the constraints to doing so were. The biggest constraint was a lack of credit for animals and feed. This was followed by a lack of feed resources, genetic limitations and a poor market. Labor was a limitation for four farmers, water and animal health a limitation for two farmers and theft risk for one farmer. 
+It is possible that many of these constraints still remain six years on.
+
+Table `r tblNo <- tblNo+1;tblNo`. Constraints to improving productivity (up to two options per household)
+```{r, warning=FALSE, echo=F}
+pander(dairyConstraintSummary)
+```
+
+There are three key points from the baseline report on the cost of production and profitability of dairy enterprises in Kenya, quoted as follows:
+
+* "Most hubs in Kenya experience positive gross margins with or without imputing cost of family labour"
+* "In terms of overall cost of production per litre of milk, the overall average for Kenya (including cost of family labour), ... [is] $0.17; When family labour costs are not included the corresponding figure [is] $0.08"
+* "Kabiyet and Kaptumo have relatively lower cost of producing a litre of milk" (P 33 EADD, 2010b)
+
+
+##Fodder production, fodder conservation and concentrate feeding
+```{r, echo=FALSE, results='hide', warning=FALSE}
+feedShortage <- sum(EADD2009$E1ShortgeFeed, na.rm=T)
+feedShortLabels <- c("Number of farmers with shortages of feed")
+feedShortSummary <- cbind(feedShortLabels, feedShortage)
+colnames(feedShortSummary) <- c("",  "Count of households")
+```
+The majority (`r round(sum(EADD2009$E1ShortgeFeed, na.rm=T)/length(EADD2009$RespID)*100,0)`%) of households cultivated fodder, many growing Napier grass (table 14).
+Many households (58% of responses) stated that they share the responsibility of fodder cultivation (table 15). The men of the household, however, did tend to contribute more labor to feeding compared to women in Nandi county (table 21).
+
+Table `r tblNo <- tblNo+1;tblNo`. Feed shortages
+```{r, warning=FALSE, echo=F}
+pander(feedShortSummary)
+```
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+fodderNapier <- table(EADD2009$napier)
+fodderTree <- table(EADD2009$foddertree)
+fodderLucerne <- table(EADD2009$lucerne)
+fodderDesmodium <- table(EADD2009$desmodium)
+fodder <- rbind(fodderNapier,fodderDesmodium, c(fodderLucerne,0), c(fodderTree,0))
+colnames(fodder) <- c("Not grown", "grown")
+rownames(fodder) <- c("Napier", "Desmodium", "Lucerne", "Fodder trees")
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Cultivated fodder
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(fodder, emphasize.rownames=F))
+```
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+fodderWhoCult <- table(EADD2009$fodderWhoCultiv)
+#colnames(fodderWhoCult) <- c()
+rownames(fodderWhoCult) <- c("Jointly", "Other")
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Who cultivates the fodder
+```{r, warning=FALSE, echo=F}
+
+pander(fodderWhoCult)
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+fodderQualityHarvest <- table(EADD2009$G4Harvest)
+fodderQualityLeaf <- table(EADD2009$G4LeafRatio)
+fodderQualityType <- table(EADD2009$G4Forage)
+fodderQualityCultivar <- table(EADD2009$G4ForageCultivt)
+fodderQualityNotsure <- table(EADD2009$G4NotSure)
+fodderQuality <- rbind(fodderQualityHarvest, fodderQualityLeaf, fodderQualityType, fodderQualityCultivar, fodderQualityNotsure)
+
+colnames(fodderQuality) <- c("Assessment method")
+rownames(fodderQuality) <- c("Harvest stage", "Leaf:stem ratio", "Type of fodder", "Cultivar", "Not sure")
+```
+
+Several farmers assessed the quality of their fodder, with harvest stage and leaf to stem ratio being the most common proxies to quality.
+
+Table `r tblNo <- tblNo+1;tblNo`. How farmers assess the quality of fodder
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(fodderQuality, emphasize.rownames=F))
+```
+
+
+
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+fodderReasonQuit <- c(sum(EADD2009$E3NoFodNoCows, na.rm=T), sum(EADD2009$E3NoFodNoLand, na.rm=T), sum(EADD2009$E3NoFodNoSeed, na.rm=T), sum(EADD2009$E3NoFodNoMilk, na.rm=T))
+reasonLabels <- c("Sold cows", "Not enough land", "Seeds not available", "Poor milk market")
+fodderReasonQuitSummary <- cbind(reasonLabels, fodderReasonQuit)
+colnames(fodderReasonQuitSummary) <- c("",  "Count across households")
+```
+
+Very few households commented as to why they had stopped planting fodder. Those that did respond (6 households) cited availability of seeds as the reason (table 17). There was a higher response rate, however, to the question of constraints to planting legumes. 
+
+Many households cited the availability of technical information as a barrier to planting fodder legumes, as well as a lack of planting material, land availability, costs and lack of labor (table 18). In terms of costs it was noted that "In Kenya, about half of the respondents spend less than $26 on feed and fodder, and $131 on concentrates." (P 19 EADD, 2010b). Further, several farmers were either not aware of the benefits of legumes or not interested in growing them.
+
+
+    
+Table `r tblNo <- tblNo+1;tblNo`. Reasons for stopping cultivating fodder
+```{r, warning=FALSE, echo=F}
+pander(fodderReasonQuitSummary)
+```
+
+
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+fodderConstraint <- c(sum(EADD2009$E4ConstraintsLackTech, na.rm=T), sum(EADD2009$E4ConstraintsLackNoMat, na.rm=T),   sum(EADD2009$E4ConstraintsNoBen, na.rm=T), sum(EADD2009$E4ConstraintsNoInterest, na.rm=T), sum(EADD2009$E4ConstraintsNoLand, na.rm=T), sum(EADD2009$E4ConstraintsCost, na.rm=T), sum(EADD2009$E4ConstraintsLackLabor, na.rm=T), sum(EADD2009$E4ConstraintsDontKnow, na.rm=T))
+reasonLabels <- c("Lack of technical information", "Unavailable planting material", "Not aware of benefits", "Not interested", "Not enough land",  "Costs", "Lack of labor", "Uncertain of constraints")
+fodderConstraintSummary <- cbind(reasonLabels, fodderConstraint)
+colnames(fodderConstraintSummary) <- c("",  "Count across households")
+```
+    
+Table `r tblNo <- tblNo+1;tblNo`. Constraints to cultivating fodder
+```{r, warning=FALSE, echo=F}
+pander(fodderConstraintSummary)
+```
+
+
+On average, farmers that do feed concentrates (`r round(length(EADD2009$dairyMeal[EADD2009$dairyMeal==1 & is.na(EADD2009$dairyMeal)==F])/length(EADD2009$RespID)*100,0)`%), they feed `r round(mean(EADD2009$concentratesKG, na.rm=T), 1)` kg per day. Some farmers feed as much as `r round(max(EADD2009$concentratesKG, na.rm=T),0)` kg (figure 10). Farmers generally fed dairy meal and one household mixed their own ration.
+This is part of a broader trend regionally where "In all sites, more farmers are currently using feed concentrates compared to 10 years ago, a phenomenon that is consistent with intensification due to population pressure and increased market orientation" " (p. 19 EADD, 2010a)
+
+
+
+
+
+```{r, echo=F, fig.height=3, fig.width=3, warning=FALSE}
+ggplot(EADD2009, aes(y=concentratesKG, x=factor(""), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("")+ ylab("Concentrates fed (daily kg)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred"))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Volume of concentrates fed per animal per day
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+silage <- table(EADD2009$silage)
+cons<- table(EADD2009$dairyMeal)
+consHomeMade <- table(EADD2009$homeRation)
+silageCons <- rbind(silage, cons, consHomeMade)
+colnames(silageCons) <- c("Not used", "Used")
+rownames(silageCons) <- c("Silage", "Dairy meal", "Home made ration")
+```
+
+Table `r tblNo <- tblNo+1;tblNo`. Number of households feeding silage, dairy meal or a home made ration
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(silageCons, emphasize.rownames=F))
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+reasonNoConcserv <- c(sum(EADD2009$reasonNoConcservTechnicalInfo, na.rm=T), sum(EADD2009$reasonNoConcservLackFeed, na.rm=T), sum(EADD2009$reasonNoConcservExpense, na.rm=T), sum(EADD2009$reasonNoConcservEnoughFeed, na.rm=T), sum(EADD2009$reasonNoConcservNotAwareBenifits, na.rm=T), sum(EADD2009$reasonNoConcservLabor))
+reasonLabels <- c("Technical information", "Lack of feed", "Expense", "Enough feed", "Not aware of benefits", "Labor requirements")
+consReasonNot <- cbind(reasonLabels, reasonNoConcserv)
+colnames(consReasonNot) <- c("",  "Count of reasons across households")
+
+```
+Only 10 households produced silage (table 19). The most common reason for not producing silage was a lack of technical information (table 20). Lack of additional feed to ensile was also cited, along with the expense of ensiling. Only four farmers considered that they did not need to conserve feed.
+
+
+Table `r tblNo <- tblNo+1;tblNo`. Reasons for not conserving fodder (silage and hay)
+```{r, warning=FALSE, echo=F}
+pander(consReasonNot)
+```
+
+##Labor allocation
+
+```{r, echo=F}
+portionLabor <- c(mean(EADD2009$portionLabor, na.rm=T),max(EADD2009$portionLabor, na.rm=T), sum(is.na(EADD2009$portionLabor)==T, na.rm=T))
+portionFeedingMan <- c(mean(EADD2009$portionFeedingMan, na.rm=T), max(EADD2009$portionFeedingMan, na.rm=T), sum(is.na(EADD2009$portionFeedingMan)==T, na.rm=T))
+portionmilkingMan <- c(mean(EADD2009$portionmilkingMan, na.rm=T), max(EADD2009$portionmilkingMan, na.rm=T), sum(is.na(EADD2009$portionmilkingMan)==T, na.rm=T))
+portionMarketingMan <- c(mean(EADD2009$portionMarketingMan, na.rm=T), max(EADD2009$portionMarketingMan, na.rm=T), sum(is.na(EADD2009$portionMarketingMan)==T, na.rm=T))
+laborSummary <- c("Mean percentage", "Max percentage", "No response (households)")
+HHlaborSummary <- cbind(laborSummary, round(portionLabor,2), round(portionFeedingMan,2), round(portionmilkingMan ,2), round(portionMarketingMan, 2))
+colnames(HHlaborSummary) <- c("", "Portion of hired labor", "Cattle feeding (portion by man)",  "Milking (portion by man)", "Milk marketing (portion by man)")
+```
+
+Across the region, Kenyan households spend more time on cattle feeding and milking. This additional labor requirement may be related to the relative proportion of exotic cattle, and feeding systems (EADD, 2010b) 
+
+In the sample from Nandi county, only one household hired labour - hiring `r round(max(EADD2009$portionLabor, na.rm=T)*100,0)`% of total time ustilised on farm. Investigating the cattle related activities, feeding was predominantly carried out by men, but not exclusively; milking was largely carried out by women and milk marketing predominantly by women also. There were instances in each of these categories where men or women did all of the work.
+
+Table `r tblNo <- tblNo+1;tblNo`. Labor allocation
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(HHlaborSummary, split.cells = c(1,2,2, 2,2)))
+```
+
+
+
+## Breeding, animal health, services and decision makers
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+ServiceAI <- table(EADD2009$AI)
+ServicedeWorm <- table(EADD2009$deworm)
+ServiceTick <- table(EADD2009$tick)
+ServiceVaccinate <- table(EADD2009$vaccinate)
+ServicelstkExtensionUsed <- table(EADD2009$lstkExtensionUsed)
+ServiceCredit <- table(EADD2009$creditUsedDairy)
+Service <- rbind(ServiceAI, c(0,ServicedeWorm), c(0,ServiceTick), ServiceVaccinate, ServicelstkExtensionUsed, c(ServiceCredit))
+colnames(Service) <- c("Didn't access", "Accessed")
+rownames(Service) <- c("AI", "Deworming", "Tick", "Vaccinate", "Livestock extension", "Credit")
+```
+
+Kenya utilised the artificial insemination (AI) more than other baseline countries, with 5.9% of households using AI. A limited number of households in Nandi utilised artificial insemination in 2009 (table 22). In terms of overall breeding strategies, "Controlled mating was highest in Kenya where 39% of female headed and 33% of male headed households were using it as a breeding strategy" (P 22 EADD, 2009). 
+In terms of adoption of AI in Nandi county, the baseline reports state:
+
+* "Although farmers in Kabiyet preferred the use of AI relative to bulls (72.9%), 80% of the farmers indicated that they had not used AI in the last five years" (p. 21 EADD, 2011)
+* "Lack of cash to pay for AI when required was reported in ...Kabiyet" (p. 22 EADD, 2011)
+* "In Kenya, the greatest concern in the provision of AI was the large number of repeat services required in order to achieve a conception. This was particularly notable in Kaptumo hub where all the farmers stated that this was their most important problem. In this hub, more than 80% of the households had not used AI in the previous 5 years. The cost of AI was noted as a key limitation in ... Kabiyet" (p. 29 EADD, 2011)
+
+
+Table `r tblNo <- tblNo+1;tblNo`. Utilisation of animal health services
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(Service, emphasize.rownames=F))
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+genderDecisionsAI <- table(EADD2009$AIwho)
+genderDecisionsdeWorm <- table(EADD2009$dewormWho)
+genderDecisionsTick <- table(EADD2009$tickWho)
+genderDecisionsVaccinate <- table(EADD2009$vaccinateWho)
+genderDecisionsCredit <- table(EADD2009$creditDecide)
+genderDecisions <- rbind(genderDecisionsAI, genderDecisionsdeWorm, genderDecisionsTick, c(genderDecisionsVaccinate[1], genderDecisionsVaccinate[2], 0, genderDecisionsVaccinate[3]), c(genderDecisionsCredit,0,0))
+colnames(genderDecisions) <- c("Head", "Spouse","Jointly", "Other")
+rownames(genderDecisions) <- c("AI", "Deworming", "Tick", "Vaccinate", "Credit")
+```
+
+Deworming, tick management and disease prevention were common amongst households. Livestock extension services were being offered by the government at the time of interview, accessed by `r round(sum(EADD2009$lstkExtensionUsed, na.rm=T)/length(EADD2009$RespID)*100,0)`% of households. Despite credit being cited as a major constraint to developing the dairy business, very few farmers access such facilities. Limited credit uptake may reflect the interest rates and terms and conditions, data is not available for this hypothesis though.
+Of those that do manage ticks, the all that specified used acaracides, with four farmers also restricting grazing (table 24). Across EADD baseline households "by far the largest proportion of animal health service expenditure goes to tick control. The average yearly expenditure [was] $42 in Kenya" (P 21 EADD, 2010b)
+
+The household head is generally the one to decide whether to access these animal health, learning and credit services (table 23). 
+
+Table `r tblNo <- tblNo+1;tblNo`. Decision makers for animal health services
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(genderDecisions, emphasize.rownames=F))
+```
+
+
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+tickMetho <- c(length(EADD2009$F3TPAcaracide[EADD2009$F3TPAcaracide>0 & is.na(EADD2009$F3TPAcaracide)==F]), sum(EADD2009$F3TPGrazingRestriction, na.rm=T), sum(EADD2009$F3TPHandPicking, na.rm=T))
+tickLabels <- c("Acaracide", "Grazing restrictions", "Hand picking")
+tickMethod <- cbind(tickLabels, tickMetho)
+colnames(tickMethod) <- c("",  "Count of methods across households (multiple allowed)")
+
+```
+
+
+
+Table `r tblNo <- tblNo+1;tblNo`. Methods for tick control
+```{r, warning=FALSE, echo=F}
+pander(tickMethod)
+```
+
+
+##Learning and dairy development
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+EADD2009dairyLeaning <- EADD2009dairyLeaning[order(-EADD2009dairyLeaning$Farmers.accessing),]
+EADD2009dairyLeaning <- subset(EADD2009dairyLeaning, Farmers.accessing>0)
+#EADD2009dairyLeaning$Total.accessed <- psum(EADD2009dairyLeaning$Workshop, EADD2009dairyLeaning$Field.day, EADD2009dairyLeaning$Media, EADD2009dairyLeaning$NGO, EADD2009dairyLeaning$Extension, EADD2009dairyLeaning$Other.farmer, EADD2009dairyLeaning$Other)
+row.names(EADD2009dairyLeaning) <- NULL
+#EADD2009dairyLeaning$X <- NULL
+EADD2009dairyLeaning1 <- select(EADD2009dairyLeaning, Type.of.information, Farmers.accessing)
+```
+
+There were a wide range of dairy related information resources that farmers accessed (table 25). Farmers used one or two methods to access information on each category.  The most common methods of accessing this information was through the experiential method of field days (used `r sum(EADD2009dairyLeaning$Field.day)` times), the trusted avenue of replicating other farmers (`r sum(EADD2009dairyLeaning$Other.farmer)` times) and the media (`r sum(EADD2009dairyLeaning$Media)` times). Farmers also utilised extension services  (used `r sum(EADD2009dairyLeaning$Extension)` times), workshops (`r sum(EADD2009dairyLeaning$Workshop)` times). Other methods of learning included NGOs, churches and agricultural shows.
+
+Field days were utilised across most information categories, except the few that accessed information on feed ration formulation and less so for cattle breeding and housing information. Media sources were highly utilised in cattle breeding, concentrate feeding and others. Information from other farmers was a source in each category, but quite limited for fodder conservation.
+
+Table `r tblNo <- tblNo+1;tblNo`. Dairy related information accessed by households
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(EADD2009dairyLeaning1, split.cell = 10))
+```
+
+```{r, echo=F, fig.height=6, fig.width=10}
+EADD2009dairyLeaning2 <- gather(select(EADD2009dairyLeaning, -X, -Farmers.accessing), key=Type.of.information)
+colnames(EADD2009dairyLeaning2) <- c("Type.of.information", "Method", "value")
+EADD2009dairyLeaning2$Type.of.information <- reorder.factor(EADD2009dairyLeaning2$Type.of.information, new.order=EADD2009dairyLeaning$Type.of.information[order(EADD2009dairyLeaning$Farmers.accessing)])
+EADD2009dairyLeaning2 <- arrange(EADD2009dairyLeaning2, Type.of.information)
+EADD2009dairyLeaning2<- group_by(EADD2009dairyLeaning2, Type.of.information)
+EADD2009dairyLeaning2 <- mutate(EADD2009dairyLeaning2, Percent=value/sum(value)*100)
+ggplot(data = EADD2009dairyLeaning2, aes(x = Type.of.information, y = Percent, fill = Method)) +
+geom_bar(stat='identity') + xlab("") + coord_flip()
+
+```
+
+Figure `r tblNo <- tblNo+1;tblNo`. Methods of accessing information
+
+#Exploratory analysis
+
+##Gender interactions:
+###Household head
+
+Female household heads were on average `r round(mean(EADD2009$HeadAge[EADD2009$HHheadGender==2]),0)` years of age and male heads being `r round(mean(EADD2009$HeadAge[EADD2009$HHheadGender==1]),0)` years of age (significance of difference not reported due to the small number of female headed households). This relationship held across Kenya, Uganda and Rwanda (EADD, 2009). The higher female head age may be due to being widowed.
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=as.factor(HHheadGender), y=HeadAge, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Household head age") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Age of household head by gender
+
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=as.factor(HHheadGender), y=HYrsExp, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Household head years farming experience") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink"))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Years of household head farming experience by gender 
+
+Female heads on average have fewer years of school, with an average of `r round(mean(EADD2009$Headschyears[EADD2009$HHheadGender==2]),0)` years, and their male counterparts an average of `r round(mean(EADD2009$Headschyears[EADD2009$HHheadGender==1]),0)` years. The rate of literacy was lower amongst female heads. Both these factors may be a function of age rather than gender.
+
+```{r, echo=F, fig.height=3, fig.width=3}
+ggplot(EADD2009, aes(x=as.factor(HHheadGender), y=Headschyears, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Household head schooling years") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink"))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Years of schooling of household head by gender
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+#HHheadGender_literate <- tabular((Heading("Literacy", TRUE) * (Heading("Illiterate") * labelSubset(subset = as.integer(as.factor(Headreadwrite)) ==  1L, label = "Headreadwrite") + Heading("Literate") * labelSubset(subset = as.integer(as.factor(Headreadwrite)) ==   2L, label = "Headreadwrite")) + 1)~ (Heading("Gender", TRUE) * (Heading("Male") * labelSubset(subset = as.integer(as.factor(HHheadGender)) ==  1L, label = "HHheadGender") + Heading("Female") * labelSubset(subset = as.integer(as.factor(HHheadGender)) ==  2L, label = "HHheadGender"))), data=EADD2009)
+
+HHheadGender_literate <- table(EADD2009$Headreadwrite,EADD2009$HHheadGender)
+HHheadGender_literate <- addmargins(table(EADD2009$Headreadwrite,EADD2009$HHheadGender), 1)
+colnames(HHheadGender_literate) <- c("Male", "Female")
+rownames(HHheadGender_literate) <- c("Illiterate", "Literate", "Total")
+
+```
+
+
+Table `r tblNo <- tblNo+1;tblNo`. Literacy of household head by gender
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(HHheadGender_literate, emphasize.rownames=F))
+```
+
+
+While the number of female headed households in Nandi poses challenges to confirm the significance of differences between household head genders, across the region (East Africa) head types are comparable. Across the region there was no significant difference in land size, cattle breeding strategy, milk sales and expenditure on AI. 
+
+Additional to the differences in age and schooling raised earlier, the baseline report noted several differences between household head types in terms of asset ownership. These are summaried as:
+
+* "significantly fewer female headed household owning these assets [vehicles] compared to male headed households" (P 10 EADD, 2009)
+
+* "Phone ownership was highest in Kenya with 65.2% of household's either owning a mobile phone or a landline. Despite this, only 48.8% of the female headed households in the country owned a phone."( P 10 EADD, 2009)
+
+* "In Kenya, significantly more male headed than female headed households owned a TV or a radio although the proportion of female headed households owning these assets was still very high at 80.5% in Kenya" (P 10 EADD, 2009)
+
+* "only in Kenya did more female headed households own more assets (the smaller category 5 assets) than male headed households" (P 10 EADD, 2009)
+
+* "The main differences in ownership of exotic cattle between male and female headed households were observed in Kenya where 48.8% of the sampled female headed households owned exotic cattle compared to 63.2% of the male headed households" (P 11 EADD, 2009)
+
+
+* "Significantly more male headed households owned local poultry than female headed households." (P 14 EADD, 2009)
+
+Focusing on the differences between household head types in Nandi, many female headed households have average land sizes (figure 14) and ruminant TLUs (figure 15). 
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(x=as.factor(HHheadGender), y=totalAcres, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Land area (acres)") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Total area utilised by household head type (acres)
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(x=as.factor(HHheadGender), y=TLUruminant, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Ruminants (TLUs)") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Tropical livestock units by household head type 
+
+Several female headed households had above average milk yield at calving (figure 16), and less variability around the optimal age at first calving and calving interval (figures 17 and 18) - positive indications for the productivity of female headed households.
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, milkCalvingExotic>0), aes(x=as.factor(HHheadGender), y=milkCalvingExotic, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Milk yield at calving") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Milk yield at calving by household head type (litres per cow in a day)
+
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, AFCexotic>10), aes(x=as.factor(HHheadGender), y=AFCexotic, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Age at first calving") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Age at first calving by household head type (months)
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, calvingIntExotic>0), aes(x=as.factor(HHheadGender), y=calvingIntExotic, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Calving interval") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Calving interval by household head type (months)
+
+All female headed households surveyed in Nandi sold less than 50% of their milk. Reasons for this potential difference are not clear, but it should be noted that in the broader sample, there was not a statistically significant difference in milk marketing.
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009), aes(x=as.factor(HHheadGender), y=milkYestPercSold, fill=as.factor(HHheadGender))) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Gender") + ylab("Percent of mik sold") +scale_x_discrete(breaks=c("1","2"), labels=c("Male", "Female")) + theme(legend.position = "none") + scale_fill_manual(values=c("dodgerblue4", "pink")) + geom_point(position = position_jitter(width = 0.2))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Proportion of milk sold at interview by household head type 
+
+###Intra-household
+The following intra-household gender dynamics have not yet been explored for Nandi specifically: livestock ownership, business activities, loan applications and dairy income control. Insights, however can be drawn from the broader region:
+
+####Livestock ownership
+* "Across all three countries, women owned 12.6% of exotic cattle and 15.4% of local cattle. These figures are much lower than results from Ethiopia that show women own about 43% of dairy cattle" (P 12 EADD, 2009)
+
+* "Joint ownership of cattle was consistently low across countries, with Kenya having the lowest percentages of jointly owned cattle with only 5.3% and 2.8% of exotic and local cattle respectively owned jointly by men and women." (P 13 EADD, 2009)
+
+* "Both exotic cattle and local cattle are mainly owned by men (82.8% and 76.9% in Kenya, 83.3% and 78.5% in Rwanda and 80.6% and 72.3% in Uganda) . Women's ownership of exotic cattle is especially low across all countries with 11.9%, 6.9% and 21.8% of exotic cattle being owned by women in Kenya, Rwanda and Uganda respectively. (P 13 EADD, 2009)
+
+* "Among surveyed livestock keepers, women had majority ownership of both exotic and local poultry while men had majority ownership of donkeys, local goats and sheep. This is contrary to the expectation that there would be more women ownership of the small ruminants (sheep and goats). Compared to cattle, women owned more exotic goats (20.0%), local goats (24.4%), sheep (20.8%) and pigs (38.7%)." (P 15 EADD, 2009)
+
+* "men have the dominant influence on decisions, particularly on the sale of livestock and use of income." (P 23 EADD, 2009)
+
+####Business ownership and group participation
+* "In Kenya, 29.0% of men owned a business compared to 17.1 % of women, a difference that was significant at the 5% level" (P 17 EADD, 2009)
+
+* "there were no significant differences in the proportion of men and the proportion of women that were members of groups" (P 17 EADD, 2009)
+
+* "Kenya had 29 households had registration in a dairy co-operative: 21 men and 8 were women. Across all three countries, there was no joint men and women registration in the dairy co-operatives." (P 25 EADD, 2009)
+
+####Loans
+* "Significantly higher proportions of men than women had applied for a loan across the 3 countries. 16% of men in households had applied for a loan while only 7.6% of women had applied for a loan." (P 18 EADD, 2009)
+
+* "The highest loan success rates were in Kenya where 89.9% of the households that applied for loans got them. The success rate for female headed households was higher although the difference between male headed and female headed households was not significantly different." (P 18 EADD, 2009)
+
+* "of the households that got credit for dairying activities in Kenya, in 35% of households, the credit was obtained by women and in 65% of the households it was obtained by men." (P 19 EADD, 2009)
+
+* "Only in Kenya were co-operatives an important source of credit for farmers with 27.3% of the men and 16.7% of the women who received credit obtaining it from co-operatives. Contrary to expectation, women did not obtain credit from informal self help groups. This could be explained by the fact that women saving in and borrowing from informal groups may not see it as credit or loans." (P 20 EADD, 2009)
+
+* "For women, the fear of being unable to pay loans was the most cited reason for not taking loans, cited by 52.2% of the women, followed by 14.1% who had never thought of taking a loan and 13% who did not have information on the loans or where to obtain them. Other reasons cited by women were that credit was too expensive; they applied but did not receive, or they lacked collateral. For 37.9% of the men, fear of being unable to pay was the main reason for not getting loans followed by 18.8% who had never thought of taking a loan and 16.7% that did not have information on loans." (P 20 EADD, 2009)
+
+
+####Control of dairy related income
+* "In 28% of the households, women exclusively received money from the sale of milk while males received the money in 65% of the households. In the remaining 7%, the money was either received by the male or the female. This percentage however changed for the evening milk where the percentage number of households in which women exclusively received money from sale of milk increased to 53%." (P 26 EADD, 2009)
+
+* "In Kenya, women received money from morning milk in 38.7% of the households and from evening milk in 71% of the households" (P 26 EADD, 2009)
+
+* "women were more likely to receive money from the morning milk when it was sold to individual customers and private milk traders than when sold to the dairy co-operative centers and chilling plants." (P 27 EADD, 2009)
+
+
+##Correlations between other household and farm characteristics
+There is a positive correlation between households that use artificial insemination and feeding concentrates in Nandi. There is also a statistically significant negative relationship between the percentage of local cattle in the herd and the usage of AI and dairy meal. Having a higher portion of local cattle in the herd also related to lower rates of utilising extension services (figure 20). These relationships in the baseline reports were attributed to 'dairy intensification' (EADD, 2011). 
+
+As seen in the descriptive statistics, the majority of households do deworm, treat for ticks and vaccinate their cattle. The correlations in figure 20, shows a statistically significant correlation between deworming, tick treatment and vaccination. Tick treatment, however is not significantly correlated with vaccination. 
+Households that fed silage and dairy meal also tended to cultivate Napier grass. 
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, AI, deworm, tick, vaccinate, napier, silage, dairyMeal, homeRation, lstkExtensionUsed, dairyIncome1, percLocalCattle))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "pch")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Correlation of animal health, feed, extension, income and cattle genetics
+
+Households with a higher age at first calving also tend to have a wider calving interval for both exotic and local cattle. Milk yield at calving does also appear to be correlated with a higher age at calving. There is no direct scientific basis for this, where potential milk yield is only affected by a first calving prior to 22 months. There are not many households with such instances - so this relationship will need further investigation before drawing conclusions. 
+
+Dairy income being the main source was not correlated with optimal herd management practices or yield at calving. Milk records, however, seem to be more likely kept as milk yield at calving increased.
+
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, AFCexotic, AFClocal, calvingIntExotic, calvingIntLocal, milkCalvingExotic, milkCalvingLocal, ageCattleMean, C8KeepRecords, dairyIncome1, percLocalCattle))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "pch")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Correlation of cattle productivity traits, dairy income and cattle genetics
+
+
+The person who is responsible for deworming the cattle will generally also undertake the tick management activities in these households. There is also an indication that as households keep a greater portion of exotic cattle, the females in the households tend to contribute a greater portion of the labor to cattle feeding. This relationship, however is not clear enough to draw such a conclusion.
+
+The volume of concentrates fed is weakly correlated with the percentage of exotic cattle, where an increase in the proportion of exotic cattle is correlated with an increase in the average feeding of concentrates per animal per day.
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, HHheadGender, AIwho, dewormWho, tickWho, fodderWhoCultiv, portionFeedingMan, portionmilkingMan, portionMarketingMan, creditDecide, dairyIncome1, percLocalCattle, concentratesKG))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "pch")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. correlation of household characteristics, decision responsibilities, intra-household labor allocation, concentrate feeding and cattle genetics
+
+
+There is a correlation between the household head's age and number of years of school and several farm characteristics. Households with older heads had larger total farm areas and higher ruminant TLUs, with TLUs dependent on the land size. The head's years of schooling was related to the portion of exotic and local cattle in the herd, with more educated farmers having higher portions of exotic breeds. Contrary to the full baseline sample, AI adoption was not correlated with years of schooling.
+
+
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, HHheadGender, HeadAge, Headschyears, HHpop, agHrs, laborHrs, portionLabor, totalAcres, TLUruminant, AI, milkYestPercSold, milkYestPercCons, dairyIncome1, percLocalCattle))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "pch")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Correlation between Household characteristics, farm characteristics and income
+
+Three household and farm characteristics were correlated with constraints for improving productivity: head schooling years, total hours spent on farm and portion of exotic and local cattle. An increase in schooling years related to a decrease in genetic limitations being an actual or perceived constraint. An increase in hours spent working on the farm was related to a decreased instance of milk marketing and feed being constraints. An increase in the portion of exotic cattle was related to a reduced instance of genetics being perceived as a limitation, indicating farmers are considering whole herd milk output, rather than just improving select cows.
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, Headschyears,  agHrs, percLocalCattle, prodConstrFeed, prodConstrCredit, ProdConstrGeneticLimit, prodConstrMilkMarket, prodConstrFeedPurchCost))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "pch")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Correlation of constraints to milk production and household and farm charictaristics 
+
+Households with more educated heads tended to consider the availability of technical information less of a constraint. Further, households spending a more time on farm work and those with fewer exotic cattle saw less benefit in cultivating legumes for fodder; this is logical given the marginal cost and benefit are not favorable in these conditions. 
+
+```{r, echo=F, fig.height=5, fig.width=8, warning=FALSE}
+EADD2009[is.na(EADD2009)==T] <- 0
+corr1 <- corr.test(select(EADD2009, Headschyears,  agHrs, percLocalCattle, E4ConstraintsLackTech, E4ConstraintsLackNoMat, E4ConstraintsCost, E4ConstraintsNoLand, E4ConstraintsLackLabor, E4ConstraintsNoBen, E4ConstraintsNoInterest, reasonNoConcservTechnicalInfo, reasonNoConcservLackFeed, reasonNoConcservExpense, reasonNoConcservEnoughFeed))
+corrplot(corr1$r, type="lower", p.mat = corr1$p, insig = "blank")
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Correlation between constraints for feed cultivation and conservation and household and farm characteristics
+
+There is a strong relationship between land size and number of ruminants kept. A linear model (excluding households with over 100 acres) predicts an increase of 0.7 TLUs for every acre increase, with a standard error of 0.05 TLUs (significant at alpha 0.001).  
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(y=TLUruminant, x=totalAcres, fill="")) + geom_point() + xlab("Land area (acres)")+ ylab("Ruminants (TLUs)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Total acres and ruminant TLUs
+
+A relationship exists between household head age and farm area and ruminant TLUs (figures 27 and 28). A linear model suggest that age is a significant (alpha 0.001) predictor of land holding and TLUs.
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(y=totalAcres, x=HeadAge, fill="")) + geom_point() + xlab("Household head age")+ ylab("Land area (acres)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Total acres and household head age
+
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(y=TLUruminant, x=HeadAge, fill="")) + geom_point() + xlab("Household head age")+ ylab("Ruminants (TLUs)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2))
+
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Ruminant TLUs and household head age
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+#ggplot(EADD2009, aes(y=percLocalCattle, x=Headreadwrite, fill="")) + geom_point() + xlab("Household head age")+ ylab("Ruminants (TLUs)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred"))
+
+```
+
+There appears to be a strong relationship between income and ruminant livestock holdings. Household's livestock holdings appear to differ by income category. Using Tukey's Honest Significance Difference (HSD) test on the analysis of variance between categories we see that there is a significant difference of TLU holdings between households earning more than 20,000 KES, and those earning less (this is also the case after removing outliers in the >30,000 category, 95% confidence level).  The drivers behind this may be telling, where perhaps below a certain level of income, pressures result in selling off livestock and land. 
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(EADD2009, aes(y=TLUruminant, x=as.factor(incomeCat), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Income categories")+ ylab("Ruminants (TLUs)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2)) + scale_x_discrete(labels=c("<2,500", "2,500-5,000", "5,000-10,000", "10,000-20,000", "20,000-30,000", ">30,000"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Ruminant TLUs and income categories
+
+There do appear to be differences between income classes and milk yield at calving. Households with more than 30,000 KES per month do achieve the highest milk yields, followed by those earning 20-30,000; Tukey's HSD shows a significant diferent between 20,000 KES and above, and those earning less than 2,500 KES. There is also a significant difference between those earning less than 10,000 KES and those earning more than 30,000. 
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, milkCalvingExotic>0), aes(y=milkCalvingExotic, x=as.factor(incomeCat), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Income categories")+ ylab("Milk at calving (l)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2))+ scale_x_discrete(labels=c("<2,500", "2,500-5,000", "5,000-10,000", "10,000-20,000", "20,000-30,000", ">30,000"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Milk yield at calving and income categories
+
+```{r, echo=F, warning=F}
+EADD2009a <- subset(EADD2009, TLUruminant<60)
+TLU_incomeaov <- aov(EADD2009a$TLUruminant~as.factor(EADD2009a$incomeCat))
+posthoc <- TukeyHSD(x=TLU_incomeaov, 'as.factor(EADD2009a$incomeCat)', conf.level = 0.95)
+
+```
+
+The relationship between calving interval and income is not as clear. Households earning between 2,500 and 10,000 KES have longest interval, and the only signigicant difference is between the few households earning below 2,500 KES and those earning between 20,000 and 30,000 (Tukey's HSD, 95%). The difference between these two income categories is not enough to conclude whether income is a driver of this productivity related practice.
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, calvingIntExotic>5), aes(y=calvingIntExotic, x=as.factor(incomeCat), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Income categories")+ ylab("Calving interval") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2)) + scale_x_discrete(labels=c("<2,500", "2,500-5,000", "5,000-10,000", "10,000-20,000", "20,000-30,000", ">30,000"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Calving interval and income categories
+
+```{r, echo=F, warning=F}
+calvingInt_incomeaov <- aov(EADD2009$calvingIntExotic~as.factor(EADD2009$incomeCat))
+posthoc <- TukeyHSD(x=calvingInt_incomeaov, 'as.factor(EADD2009$incomeCat)', conf.level = 0.95)
+
+```
+
+The relationship between age at first calving and income is not clear. There is a significant difference between households earning less than 2,500 KES and those earning more than 5,000 KES (Tukey's HSD, 95%). The lowest income category differs particularly with two households having an age at first calving less than 18 months. Income can not be conclusively identified as a differentiating factor for age at first calving.
+
+
+```{r, echo=F, fig.height=3, fig.width=5, warning=FALSE}
+ggplot(subset(EADD2009, AFCexotic>10), aes(y=AFCexotic, x=as.factor(incomeCat), fill="")) + geom_boxplot() + stat_summary(fun.y=mean, geom="point", shape=5, size=4) + xlab("Income categories")+ ylab("Age at first calving (exotic)") +theme(legend.position = "none")+ scale_fill_manual(values=c("indianred")) + geom_point(position = position_jitter(width = 0.2)) + scale_x_discrete(labels=c("<2,500", "2,500-5,000", "5,000-10,000", "10,000-20,000", "20,000-30,000", ">30,000"))+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Figure `r fgrNo <- fgrNo+1;fgrNo`. Age at first calving and income categories
+
+```{r, echo=F, warning=F}
+AFCexotic_incomeaov <- aov(EADD2009$AFCexotic~as.factor(EADD2009$incomeCat))
+posthoc <- TukeyHSD(x=AFCexotic_incomeaov, 'as.factor(EADD2009$incomeCat)', conf.level = 0.95)
+
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+rec_yield <- table(EADD2009$C8KeepRecords,ifelse(EADD2009$milkCalvingExotic>4.4,1,0))[c(1,2),]
+recordLabels <- c("No records kept", "Records kept")
+rec_yieldSummary <- cbind(recordLabels, rec_yield)
+colnames(rec_yieldSummary) <- c("",  "Milk at calving < 4.4l", "Milk at calving > 4.4l")
+row.names(rec_yieldSummary) <- NULL
+```
+
+The vast majority of farmers keeping records received more that 4.4 litres per cow. 
+
+Table `r tblNo <- tblNo+1;tblNo`. Instance of keeping records by milk yield at calving
+```{r, warning=FALSE, echo=F}
+pander(pandoc.table(rec_yieldSummary, split.cell = 10))
+```
+
+
+
+#References
+EADD, 2010a. *Report 1: survey methodology and overview key results of the household surveys,*
+
+EADD, 2011. *Report 2: Constraints to use of artificial insemination service and possible solutions Constraints to use of artificial insemination service and possible,*
+
+EADD, 2010b. *Report 5. Production and marketing,*
+
+EADD, 2009. *Report 6: Gender, dairy production and marketing,*
+
+
